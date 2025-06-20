@@ -2,6 +2,7 @@ from flask import Flask, request, render_template
 import os
 
 app = Flask(__name__)
+
 UPLOAD_FOLDER = 'static/snapshots'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -11,13 +12,10 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    try:
-        filename = 'sheet_snapshot.pdf'
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
+    file = request.data
+    with open(os.path.join(UPLOAD_FOLDER, 'latest.pdf'), 'wb') as f:
+        f.write(file)
+    return 'Upload successful', 200
 
-        with open(filepath, 'wb') as f:
-            f.write(request.data)
-
-        return 'Uploaded', 200
-    except Exception as e:
-        return f'Error: {str(e)}', 500
+if __name__ == '__main__':
+    app.run(debug=True)
