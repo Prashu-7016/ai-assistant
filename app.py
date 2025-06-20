@@ -19,5 +19,7 @@ def upload():
     if file.filename == '':
         return 'No selected file', 400
 
-    file.save(os.path.join(UPLOAD_FOLDER, 'sheet_snapshot.pdf'))
+    save_path = os.path.join(UPLOAD_FOLDER, 'sheet_snapshot.pdf')
+    file.save(save_path)
+    print(f"Saved file to {save_path}")
     return 'Uploaded', 200
