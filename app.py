@@ -2,8 +2,7 @@ from flask import Flask, request, render_template
 import os
 
 app = Flask(__name__)
-
-UPLOAD_FOLDER = "static/snapshots"
+UPLOAD_FOLDER = 'static/snapshots'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/')
@@ -12,14 +11,13 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    if 'file' not in request.files:
-        return 'No file part', 400
+    try:
+        filename = 'sheet_snapshot.pdf'
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
 
-    file = request.files['file']
-    if file.filename == '':
-        return 'No selected file', 400
+        with open(filepath, 'wb') as f:
+            f.write(request.data)
 
-    save_path = os.path.join(UPLOAD_FOLDER, 'sheet_snapshot.pdf')
-    file.save(save_path)
-    print(f"Saved file to {save_path}")
-    return 'Uploaded', 200
+        return 'Uploaded', 200
+    except Exception as e:
+        return f'Error: {str(e)}', 500
